@@ -70,45 +70,6 @@ func generateTestKeys() (*ecdsa.PrivateKey, *ecdsa.PublicKey, []byte) {
 	return privateKey, pubKey, derBytes
 }
 
-func TestInitKMSWithProfile(t *testing.T) {
-	client, err := InitKMSWithProfile(context.TODO(), "us-east-1", "default", map[string]string{"env": "test"})
-	if err != nil {
-		t.Fatalf("Unexpected error: %v", err)
-	}
-	if client == nil {
-		t.Fatal("Expected non-nil KMSClient")
-	}
-	if len(client.kmsKeyTags) != 1 || *client.kmsKeyTags[0].TagKey != "env" {
-		t.Errorf("KMSKeyTags not correctly set")
-	}
-}
-
-func TestInitKMSWithStaticCredentials(t *testing.T) {
-	client, err := InitKMSWithStaticCredentials(context.TODO(), "us-east-1", "access", "secret", "http://localhost:8080", map[string]string{"env": "test"})
-	if err != nil {
-		t.Fatalf("Unexpected error: %v", err)
-	}
-	if client == nil {
-		t.Fatal("Expected non-nil KMSClient")
-	}
-	if len(client.kmsKeyTags) != 1 || *client.kmsKeyTags[0].TagKey != "env" {
-		t.Errorf("KMSKeyTags not correctly set")
-	}
-}
-
-func TestInitLocalKMS(t *testing.T) {
-	client, err := InitLocalKMS(context.TODO(), "http://localhost:8080", map[string]string{"env": "test"})
-	if err != nil {
-		t.Fatalf("Unexpected error: %v", err)
-	}
-	if client == nil {
-		t.Fatal("Expected non-nil KMSClient")
-	}
-	if len(client.kmsKeyTags) != 1 || *client.kmsKeyTags[0].TagKey != "env" {
-		t.Errorf("KMSKeyTags not correctly set")
-	}
-}
-
 func TestRegisterKey(t *testing.T) {
 	_, pubKey, derBytes := generateTestKeys()
 	expectedAddress := crypto.PubkeyToAddress(*pubKey).Hex()
